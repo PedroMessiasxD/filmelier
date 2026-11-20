@@ -852,27 +852,106 @@ a {
   text-underline-offset: 0.2em;
 }
 
-/* Topo: nome em letra de marquise à esquerda, abas à direita; a frase de abertura logo abaixo. */
-main > p {
-  margin: 0.75rem 0 1.5rem;
+/* Topo com abertura: a fachada do cinema à noite (vídeo em loop, ver Abertura.tsx) ocupa a largura toda atrás do nome, da
+   chamada e da frase; a fachada fica na metade direita e a esquerda escura segura o texto. */
+body {
+  overflow-x: clip;
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+main > .abertura {
+  position: relative;
+  z-index: 0;
+  grid-row: 1 / 4;
+  grid-column: 1 / -1;
+  justify-self: center;
+  align-self: stretch;
+  width: 100vw;
+  margin-top: -1rem;
+  overflow: hidden;
+  background: var(--cor-fundo);
+}
+
+.abertura-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 12%;
+  opacity: 0.55;
+}
+
+/* Sombreado de sala escura: vinheta em volta da tela, o pé fundindo com a página e a parede da esquerda segurando o texto. */
+.abertura::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    radial-gradient(ellipse 75% 95% at 68% 38%, transparent 40%, var(--cor-fundo) 100%),
+    linear-gradient(to top, var(--cor-fundo) 0, transparent 38%),
+    linear-gradient(to bottom, var(--cor-fundo) 0, transparent 24%),
+    linear-gradient(to right, var(--cor-fundo) 0, transparent 55%);
+}
+
+/* Coluna explícita: sem ela o posicionamento automático evita sobrepor a abertura e abre uma coluna nova. */
+main > h1,
+main > .chamada,
+main > .abertura-texto,
+main > .abas {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+}
+
+main > h1 {
+  grid-row: 1;
+}
+
+.chamada {
+  grid-row: 2;
+  max-width: 12ch;
+  margin: 4rem 0 0;
+  font-family: "Big Shoulders Display", system-ui, sans-serif;
+  font-size: clamp(2.75rem, 6.5vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--cor-texto);
+}
+
+main > .abertura-texto {
+  grid-row: 3;
+  max-width: 34rem;
+  margin: 1rem 0 3.5rem;
+  font-size: 1.1rem;
   color: var(--cor-texto-secundario);
 }
 
 main > .abas {
-  margin: 1rem 0 0;
+  grid-row: 4;
+  margin: 0 0 0.5rem;
   border-bottom: 0;
+}
+
+main > [role="tabpanel"] {
+  grid-column: 1 / -1;
 }
 
 @media (min-width: 40rem) {
   main {
-    display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(16rem, auto);
     column-gap: 2rem;
-    align-items: center;
   }
 
   main > h1 {
-    grid-row: 1;
     grid-column: 1;
   }
 
@@ -882,13 +961,17 @@ main > .abas {
     margin: 0;
   }
 
-  main > p {
-    grid-row: 2;
+  main > .chamada,
+  main > .abertura-texto {
     grid-column: 1 / -1;
   }
 
-  main > [role="tabpanel"] {
-    grid-column: 1 / -1;
+  .abertura-video {
+    opacity: 1;
+  }
+
+  .chamada {
+    margin-top: clamp(3rem, 9vh, 6rem);
   }
 }
 
